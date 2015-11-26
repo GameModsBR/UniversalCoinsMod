@@ -15,6 +15,19 @@ buildscript {
     }
 }
 
+apply plugin: 'java'
+
+sourceSets {
+    main {
+        java {
+            srcDir 'java'
+        }
+        resources {
+            srcDir 'resources'
+        }
+    }
+}
+
 apply plugin: 'forge'
 
 version = "1.7.2-1.6.30"
@@ -22,7 +35,7 @@ group= "com.github.notabadminer" // http://maven.apache.org/guides/mini/guide-na
 archivesBaseName = "UniversalCoins"
 
 minecraft {
-    version = "1.7.2-10.12.2.1121"
+    version = "1.7.10-10.13.0.1180"
     assetDir = "eclipse/assets"
 	
 	// replacing
@@ -44,7 +57,7 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
+    compile project(":CraftGuide")
 }
 
 processResources
