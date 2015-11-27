@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants;
 import universalcoins.UniversalCoins;
@@ -25,6 +26,7 @@ public class TileCardStation extends TileEntity implements IInventory, ISidedInv
 	private static final Item[] coins = new Item[] { UniversalCoins.proxy.itemCoin,
 			UniversalCoins.proxy.itemSmallCoinStack, UniversalCoins.proxy.itemLargeCoinStack,
 			UniversalCoins.proxy.itemSmallCoinBag, UniversalCoins.proxy.itemLargeCoinBag };
+	public EntityPlayer player;
 	public String playerName = "";
 	public String playerUID = "";
 	public boolean inUse = false;
@@ -120,11 +122,24 @@ public class TileCardStation extends TileEntity implements IInventory, ISidedInv
 					inventory[itemCardSlot].stackTagCompound.removeTag("CoinSum");
 					inventory[itemCardSlot].stackTagCompound.setString("Account", accountNumber);
 				}
+
 				accountNumber = inventory[itemCardSlot].stackTagCompound.getString("Account");
 				cardOwner = inventory[itemCardSlot].stackTagCompound.getString("Owner");
 				if (getCustomAccount(playerUID) != "")
 					customAccountName = getCustomAccount(playerUID);
 				accountBalance = getAccountBalance(accountNumber);
+
+				if(!cardOwner.equals(playerUID))
+				{
+					inventory[itemCardSlot] = null;
+					accountNumber = "none";
+					customAccountNumber = "none";
+					customAccountName = "none";
+					cardOwner = "";
+					accountBalance = 0;
+					if(player != null)
+						player.closeScreen();
+				}
 			}
 		}
 	}
@@ -252,6 +267,24 @@ public class TileCardStation extends TileEntity implements IInventory, ISidedInv
 	public void onButtonPressed(int functionId) {
 		if (worldObj.isRemote)
 			return;
+
+		//System.out.println("funcionId:"+functionId+" playerId:"+playerUID+" cardOwner:"+cardOwner+" accountNumber:"+accountNumber+" " +
+		//		"customAccountName:"+customAccountName+" customAccountNumber:"+customAccountNumber+" accountBalance:"+accountBalance+" " +
+		//		"accountError:"+Boolean.toString(accountError));
+		if(!cardOwner.isEmpty() && !cardOwner.equals(playerUID))
+		{
+			functionId = 6;
+			cardOwner = "";
+			accountNumber = "";
+			customAccountName = "";
+			customAccountNumber = "";
+			accountBalance = -1;
+			if(inventory[itemCardSlot] != null && player != null)
+				player.closeScreen();
+			inventory[itemCardSlot] = null;
+			return;
+		}
+
 		accountError = false; // reset error state
 		// handle function IDs sent from CardStationGUI
 		// function1 - new card
@@ -405,6 +438,7 @@ public class TileCardStation extends TileEntity implements IInventory, ISidedInv
 
 	private void transferCustomAccount() {
 		UniversalAccounts.getInstance().transferCustomAccount(playerUID, customAccountName);
+		customAccountNumber = UniversalAccounts.getInstance().getCustomAccount(playerUID);
 	}
 
 	private void addCustomAccount(String customAccountName2) {

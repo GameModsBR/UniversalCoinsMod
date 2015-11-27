@@ -50,6 +50,7 @@ public class BlockPackager extends BlockContainer {
 			float par8, float par9) {
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		if (tileEntity != null && tileEntity instanceof TilePackager) {
+			if(world.isRemote) return true;
 			TilePackager tilePackager = (TilePackager) world.getTileEntity(x, y, z);
 			EntityPlayer playerTest = world.getPlayerEntityByName(tilePackager.playerName);
 			if (playerTest == null || !tilePackager.isUseableByPlayer(playerTest)) {
@@ -63,6 +64,8 @@ public class BlockPackager extends BlockContainer {
 			} else {
 				player.openGui(UniversalCoins.instance, 0, world, x, y, z);
 				tilePackager.playerName = player.getDisplayName();
+				tilePackager.player = player;
+				tilePackager.checkCard();
 				tilePackager.inUse = true;
 				tilePackager.packageTarget = "";
 				return true;

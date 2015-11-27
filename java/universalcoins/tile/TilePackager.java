@@ -40,6 +40,7 @@ public class TilePackager extends TileEntity implements IInventory, ISidedInvent
 	public int coinSum = 0;
 	public boolean cardAvailable = false;
 	public String customName = "";
+	public EntityPlayer player;
 	public String playerName = "";
 	public String packageTarget = "";
 	public boolean inUse = false;
@@ -160,7 +161,9 @@ public class TilePackager extends TileEntity implements IInventory, ISidedInvent
 	}
 
 	public void checkCard() {
-		if (inventory[itemCardSlot] != null && inventory[itemCardSlot].hasTagCompound() && !worldObj.isRemote) {
+		if (inventory[itemCardSlot] != null && inventory[itemCardSlot].hasTagCompound() && !worldObj.isRemote
+				&& inventory[itemCardSlot].stackTagCompound.getString("Owner").equals(player.getPersistentID().toString())
+				) {
 			String account = inventory[itemCardSlot].getTagCompound().getString("Account");
 			int accountBalance = UniversalAccounts.getInstance().getAccountBalance(account);
 			if (accountBalance >= packageCost[packageSize]) {

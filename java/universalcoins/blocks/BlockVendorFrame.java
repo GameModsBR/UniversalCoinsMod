@@ -124,6 +124,7 @@ public class BlockVendorFrame extends BlockContainer {
 			float par8, float par9) {
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		if (tileEntity != null && tileEntity instanceof TileVendor) {
+			if(world.isRemote) return true;
 			TileVendor tileVendor = (TileVendor) world.getTileEntity(x, y, z);
 			EntityPlayer playerTest = world.getPlayerEntityByName(tileVendor.playerName);
 			if (playerTest == null || !tileVendor.isUseableByPlayer(playerTest)) {
@@ -138,6 +139,8 @@ public class BlockVendorFrame extends BlockContainer {
 			} else {
 				player.openGui(UniversalCoins.instance, 0, world, x, y, z);
 				tileVendor.playerName = player.getDisplayName();
+				tileVendor.player = player;
+				tileVendor.checkCard();
 				tileVendor.inUse = true;
 				return true;
 			}
@@ -182,19 +185,19 @@ public class BlockVendorFrame extends BlockContainer {
 		} else {
 			// Vending Frame pulled from NEI or creative. Cheaters :P
 			((TileVendorFrame) world.getTileEntity(x, y, z)).blockIcon = "planks_birch";
-			((TileVendorFrame) world.getTileEntity(x, y, z)).blockOwner = entity.getCommandSenderName();
+			((TileVendorFrame) world.getTileEntity(x, y, z)).blockOwner = entity.getPersistentID().toString();
 		}
 
 	}
 
 	@Override
 	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z) {
-		String ownerName = ((TileVendorFrame) world.getTileEntity(x, y, z)).blockOwner;
+		String ownerId = ((TileVendorFrame) world.getTileEntity(x, y, z)).blockOwner;
 		if (player.capabilities.isCreativeMode) {
 			super.removedByPlayer(world, player, x, y, z);
 			return false;
 		}
-		if (player.getDisplayName().equals(ownerName) && !world.isRemote) {
+		if (player.getPersistentID().toString().equals(ownerId) && !world.isRemote) {
 			ItemStack stack = getItemStackWithData(world, x, y, z);
 			EntityItem entityItem = new EntityItem(world, x, y, z, stack);
 			world.spawnEntityInWorld(entityItem);
@@ -204,8 +207,8 @@ public class BlockVendorFrame extends BlockContainer {
 	}
 
 	public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
-		String ownerName = ((TileVendorFrame) world.getTileEntity(x, y, z)).blockOwner;
-		if (player.getDisplayName().equals(ownerName)) {
+		String ownerId = ((TileVendorFrame) world.getTileEntity(x, y, z)).blockOwner;
+		if (player.getPersistentID().toString().equals(ownerId)) {
 			this.setHardness(1.0F);
 		} else {
 			this.setHardness(-1.0F);

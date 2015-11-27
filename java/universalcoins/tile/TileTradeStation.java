@@ -47,6 +47,7 @@ public class TileTradeStation extends TileEntity implements IInventory, ISidedIn
 	public String customName;
 	public boolean inUse = false;
 	public String playerName = "";
+	public EntityPlayer player;
 
 	public TileTradeStation() {
 		super();
@@ -502,6 +503,13 @@ public class TileTradeStation extends TileEntity implements IInventory, ISidedIn
 
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack stack) {
+		if(slot == itemCardSlot && stack != null && stack.hasTagCompound() && player != null &&
+				!stack.stackTagCompound.getString("Owner").equals(player.getPersistentID().toString())
+				) {
+			inventory[slot] = null;
+			player.closeScreen();
+		}
+
 		inventory[slot] = stack;
 		if (stack != null) {
 			if (slot == itemCoinSlot || slot == itemInputSlot) {
@@ -622,5 +630,15 @@ public class TileTradeStation extends TileEntity implements IInventory, ISidedIn
 			return false;
 		}
 		return UniversalAccounts.getInstance().debitAccount(accountNumber, i);
+	}
+
+	public void checkCard()
+	{
+		ItemStack stack = inventory[itemCardSlot];
+		if(stack != null && stack.hasTagCompound() && player != null &&
+				!stack.stackTagCompound.getString("Owner").equals(player.getPersistentID().toString())
+				) {
+			inventory[itemCardSlot] = null;
+		}
 	}
 }

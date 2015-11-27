@@ -53,6 +53,7 @@ public class BlockTradeStation extends BlockContainer {
 			float par8, float par9) {
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		if (tileEntity != null && tileEntity instanceof TileTradeStation) {
+			if(world.isRemote) return true;
 			TileTradeStation tileTrade = (TileTradeStation) world.getTileEntity(x, y, z);
 			EntityPlayer playerTest = world.getPlayerEntityByName(tileTrade.playerName);
 			if (playerTest == null || !tileTrade.isUseableByPlayer(playerTest)) {
@@ -65,6 +66,8 @@ public class BlockTradeStation extends BlockContainer {
 				return true;
 			} else {
 				tileTrade.playerName = player.getDisplayName();
+				tileTrade.player = player;
+				tileTrade.checkCard();
 				tileTrade.inUse = true;
 				player.openGui(UniversalCoins.instance, 0, world, x, y, z);
 				return true;

@@ -74,6 +74,7 @@ public class TileVendor extends TileEntity implements IInventory, ISidedInventor
 	public boolean uSBagButtonActive = false;
 	public boolean uLBagButtonActive = false;
 	public boolean inUse = false;
+	public EntityPlayer player;
 	public String playerName = "";
 	public String blockIcon = ""; // used for vendor frame texture
 	public int textColor = 0x0;
@@ -561,6 +562,20 @@ public class TileVendor extends TileEntity implements IInventory, ISidedInventor
 
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack stack) {
+		if(slot == itemCardSlot && stack != null && stack.hasTagCompound() && player != null &&
+				!stack.stackTagCompound.getString("Owner").equals(player.getPersistentID().toString())
+		) {
+			inventory[slot] = null;
+			player.closeScreen();
+		}
+
+		if(slot == itemUserCardSlot && stack != null && stack.hasTagCompound() && player != null &&
+				!stack.stackTagCompound.getString("Owner").equals(player.getPersistentID().toString())
+				) {
+			inventory[slot] = null;
+			player.closeScreen();
+		}
+
 		inventory[slot] = stack;
 		if (stack != null) {
 			if (slot == itemCoinInputSlot || slot == itemUserCoinInputSlot) {
@@ -1035,4 +1050,24 @@ public class TileVendor extends TileEntity implements IInventory, ISidedInventor
 		UniversalAccounts.getInstance().creditAccount(accountNumber, i);
 	}
 
+	public void checkCard()
+	{
+		ItemStack stack;
+		/* stack = inventory[itemCardSlot];
+		if(stack != null && stack.hasTagCompound() && player != null &&
+				!stack.stackTagCompound.getString("Owner").equals(player.getPersistentID().toString())
+				) {
+			inventory[itemCardSlot] = null;
+		}*/
+
+		if(player != null && blockOwner.equals(player.getPersistentID().toString()))
+			return;
+
+		stack = inventory[itemUserCardSlot];
+		if(stack != null && stack.hasTagCompound() && player != null &&
+				!stack.stackTagCompound.getString("Owner").equals(player.getPersistentID().toString())
+				) {
+			inventory[itemUserCardSlot] = null;
+		}
+	}
 }

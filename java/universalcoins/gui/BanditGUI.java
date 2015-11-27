@@ -20,6 +20,7 @@ public class BanditGUI extends GuiContainer {
 	public static final int idPullButton = 0;
 	public static final int idCoinButton = 1;
 	private int[] counter = { 219, 219, 219, 219, 219 };
+	private long[] counterIncrement = new long[5];
 	private boolean[] reelActive = { true, true, true, true, true };
 	private boolean resultCheck = false;
 	private int[] reelDrawPos = { 13, 35, 57, 79, 101 };
@@ -58,6 +59,16 @@ public class BanditGUI extends GuiContainer {
 		fontRendererObj.drawString(coinSumString, 140 - stringWidth, 78, 4210752);
 	}
 
+	protected void incrementCounter(long time, int index, int increment)
+	{
+		long nextIncrement = counterIncrement[index];
+		if(time >= nextIncrement)
+		{
+			counter[index] += increment;
+			counterIncrement[index] = time +10;
+		}
+	}
+
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
 		// disable if player has no money
@@ -76,6 +87,7 @@ public class BanditGUI extends GuiContainer {
 		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 
 		// draw reels
+		long time = System.currentTimeMillis();
 		for (int i = 0; i < reelDrawPos.length; i++) {
 			this.drawTexturedModalRect(x + reelDrawPos[i], y + 26, 176, 0 + counter[i], 21, 36);
 			if (reelActive[i]) {
@@ -83,7 +95,7 @@ public class BanditGUI extends GuiContainer {
 					reelActive[i] = false;
 					continue;
 				}
-				counter[i] -= 2;
+				incrementCounter(time, i, -2);
 				if (counter[i] < 0)
 					counter[i] = 216;
 			}

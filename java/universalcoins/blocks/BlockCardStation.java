@@ -54,6 +54,7 @@ public class BlockCardStation extends BlockContainer {
 			float par8, float par9) {
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		if (tileEntity != null && tileEntity instanceof TileCardStation) {
+			if(world.isRemote) return true;
 			TileCardStation tileCardStation = (TileCardStation) world.getTileEntity(x, y, z);
 			EntityPlayer playerTest = world.getPlayerEntityByName(tileCardStation.playerName);
 			if (playerTest == null || !tileCardStation.isUseableByPlayer(playerTest)) {
@@ -68,6 +69,7 @@ public class BlockCardStation extends BlockContainer {
 				player.openGui(UniversalCoins.instance, 0, world, x, y, z);
 				tileCardStation.playerName = player.getDisplayName();
 				tileCardStation.playerUID = player.getUniqueID().toString();
+				tileCardStation.player = player;
 				tileCardStation.inUse = true;
 				return true;
 			}

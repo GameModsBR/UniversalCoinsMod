@@ -49,6 +49,7 @@ public class BlockBandit extends BlockContainer {
 			float par8, float par9) {
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		if (tileEntity != null && tileEntity instanceof TileBandit) {
+			if(world.isRemote) return true;
 			TileBandit tileBandit = (TileBandit) world.getTileEntity(x, y, z);
 			EntityPlayer playerTest = world.getPlayerEntityByName(tileBandit.playerName);
 			if (playerTest == null || !tileBandit.isUseableByPlayer(playerTest)) {
@@ -63,6 +64,8 @@ public class BlockBandit extends BlockContainer {
 			} else {
 				player.openGui(UniversalCoins.instance, 0, world, x, y, z);
 				tileBandit.playerName = player.getDisplayName();
+				tileBandit.player = player;
+				tileBandit.checkCard();
 				tileBandit.inUse = true;
 				return true;
 			}

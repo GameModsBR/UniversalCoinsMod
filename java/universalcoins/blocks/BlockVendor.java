@@ -49,6 +49,7 @@ public class BlockVendor extends BlockContainer {
 			float par8, float par9) {
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		if (tileEntity != null && tileEntity instanceof TileVendor) {
+			if(world.isRemote) return true;
 			TileVendor tileVendor = (TileVendor) world.getTileEntity(x, y, z);
 			EntityPlayer playerTest = world.getPlayerEntityByName(tileVendor.playerName);
 			if (playerTest == null || !tileVendor.isUseableByPlayer(playerTest)) {
@@ -63,6 +64,8 @@ public class BlockVendor extends BlockContainer {
 			} else {
 				player.openGui(UniversalCoins.instance, 0, world, x, y, z);
 				tileVendor.playerName = player.getDisplayName();
+				tileVendor.player = player;
+				tileVendor.checkCard();
 				tileVendor.inUse = true;
 				tileVendor.updateCoinsForPurchase();
 				return true;
@@ -129,7 +132,7 @@ public class BlockVendor extends BlockContainer {
 
 		} else {
 			// item has no owner so we'll set one and get out of here
-			((TileVendorBlock) world.getTileEntity(x, y, z)).blockOwner = entity.getCommandSenderName();
+			((TileVendorBlock) world.getTileEntity(x, y, z)).blockOwner = entity.getPersistentID().toString();
 		}
 		int meta = stack.getItemDamage();
 		world.setBlockMetadataWithNotify(x, y, z, meta, 2);
@@ -137,12 +140,12 @@ public class BlockVendor extends BlockContainer {
 
 	@Override
 	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z) {
-		String ownerName = ((TileVendorBlock) world.getTileEntity(x, y, z)).blockOwner;
+		String ownerId = ((TileVendorBlock) world.getTileEntity(x, y, z)).blockOwner;
 		if (player.capabilities.isCreativeMode) {
 			super.removedByPlayer(world, player, x, y, z);
 			return false;
 		}
-		if (player.getDisplayName().equals(ownerName) && !world.isRemote) {
+		if (player.getPersistentID().toString().equals(ownerId) && !world.isRemote) {
 			ItemStack stack = getItemStackWithData(world, x, y, z);
 			EntityItem entityItem = new EntityItem(world, x, y, z, stack);
 			world.spawnEntityInWorld(entityItem);
@@ -152,8 +155,8 @@ public class BlockVendor extends BlockContainer {
 	}
 
 	public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
-		String ownerName = ((TileVendorBlock) world.getTileEntity(x, y, z)).blockOwner;
-		if (player.getDisplayName().equals(ownerName)) {
+		String ownerId = ((TileVendorBlock) world.getTileEntity(x, y, z)).blockOwner;
+		if (player.getPersistentID().toString().equals(ownerId)) {
 			this.setHardness(0.3F);
 		} else {
 			this.setHardness(-1.0F);

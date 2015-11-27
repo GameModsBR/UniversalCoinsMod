@@ -55,7 +55,7 @@ class GuiHandler implements IGuiHandler {
 				return new ContainerVendorWrench(player.inventory, (TileVendor) tileEntity);
 			}
 			if (((TileVendor) tileEntity).blockOwner == null
-					|| ((TileVendor) tileEntity).blockOwner.contentEquals(player.getDisplayName())) {
+					|| ((TileVendor) tileEntity).blockOwner.contentEquals(player.getPersistentID().toString())) {
 				return new ContainerVendor(player.inventory, (TileVendor) tileEntity);
 			} else if (((TileVendor) tileEntity).sellMode) {
 				return new ContainerVendorSell(player.inventory, (TileVendor) tileEntity);
@@ -103,7 +103,7 @@ class GuiHandler implements IGuiHandler {
 				return new VendorWrenchGUI(player.inventory, (TileVendor) tileEntity);
 			}
 			if (((TileVendor) tileEntity).blockOwner == null
-					|| ((TileVendor) tileEntity).blockOwner.contentEquals(player.getDisplayName())) {
+					|| ((TileVendor) tileEntity).blockOwner.contentEquals(player.getPersistentID().toString())) {
 				return new VendorGUI(player.inventory, (TileVendor) tileEntity);
 			} else if (((TileVendor) tileEntity).sellMode) {
 				return new VendorSellGUI(player.inventory, (TileVendor) tileEntity);

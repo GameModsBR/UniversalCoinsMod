@@ -28,6 +28,7 @@ public class CardStationGUI extends GuiContainer {
 			"duplicateaccount", "processing" };
 	int barProgress = 0;
 	int counter = 0;
+	long barProgressNextIncrement;
 
 	public CardStationGUI(InventoryPlayer inventoryPlayer, TileCardStation tileEntity) {
 		super(new ContainerCardStation(inventoryPlayer, tileEntity));
@@ -67,6 +68,16 @@ public class CardStationGUI extends GuiContainer {
 		textField.setText("0");
 	}
 
+	private void incrementProgressBar()
+	{
+		long time = System.currentTimeMillis();
+		if(time >= barProgressNextIncrement)
+		{
+			barProgress++;
+			barProgressNextIncrement = time +20;
+		}
+	}
+
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
 		final ResourceLocation texture = new ResourceLocation("universalcoins", "textures/gui/cardStation.png");
@@ -79,7 +90,7 @@ public class CardStationGUI extends GuiContainer {
 		}
 		if (menuState == 1) {
 			// state 1 is auth - run eye scan
-			barProgress++;
+			incrementProgressBar();
 			this.drawTexturedModalRect(x + 151, y + 19, 176, 0, 18, 18);
 			this.drawTexturedModalRect(x + 34, y + 43, 0, 201, Math.min(barProgress, 104), 5);
 			if (barProgress > 105) {
@@ -141,27 +152,27 @@ public class CardStationGUI extends GuiContainer {
 			fontRendererObj.drawString(textField.getText() + drawCursor(), x + 34, y + 42, 4210752);
 		}
 		if (menuState == 10 && tEntity.accountError) {
-			barProgress++;
+			incrementProgressBar();
 			if (barProgress > 20) {
 				menuState = 18;
 			}
 		}
 		if (menuState == 14) {
-			barProgress++;
+			incrementProgressBar();
 			if (barProgress > 100) {
 				menuState = 0;
 				barProgress = 0;
 			}
 		}
 		if (menuState == 15) {
-			barProgress++;
+			incrementProgressBar();
 			if (barProgress > 100) {
 				menuState = 2;
 				barProgress = 0;
 			}
 		}
 		if (menuState == 18) {
-			barProgress++;
+			incrementProgressBar();
 			if (barProgress > 100) {
 				menuState = 9;
 				barProgress = 0;

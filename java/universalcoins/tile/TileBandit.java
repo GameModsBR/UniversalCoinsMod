@@ -35,6 +35,7 @@ public class TileBandit extends TileEntity implements IInventory {
 	public boolean cardAvailable = false;
 	public String customName = "";
 	public String playerName = "";
+	public EntityPlayer player;
 	public boolean inUse = false;
 	public int[] reelPos = { 0, 0, 0, 0, 0 };
 	private int[] reelStops = { 0, 22, 44, 66, 88, 110, 132, 154, 176, 198 };
@@ -46,7 +47,7 @@ public class TileBandit extends TileEntity implements IInventory {
 	public void onButtonPressed(int buttonId) {
 		if (buttonId == 0) {
 			if (cardAvailable) {
-				String account = inventory[itemCardSlot].getTagCompound().getString("accountNumber");
+				String account = inventory[itemCardSlot].getTagCompound().getString("Account");
 				UniversalAccounts.getInstance().debitAccount(account, spinFee);
 			} else {
 				coinSum -= spinFee;
@@ -56,7 +57,7 @@ public class TileBandit extends TileEntity implements IInventory {
 		}
 		if (buttonId == 1) {
 			if (cardAvailable && inventory[itemCardSlot].getItem() == UniversalCoins.proxy.itemEnderCard) {
-				String account = inventory[itemCardSlot].getTagCompound().getString("accountNumber");
+				String account = inventory[itemCardSlot].getTagCompound().getString("Account");
 				UniversalAccounts.getInstance().creditAccount(account, coinSum);
 				coinSum = 0;
 			} else {
@@ -138,10 +139,12 @@ public class TileBandit extends TileEntity implements IInventory {
 
 	public void checkCard() {
 		cardAvailable = false;
-		if (inventory[itemCardSlot] != null && inventory[itemCardSlot].hasTagCompound() && !worldObj.isRemote) {
-			String account = inventory[itemCardSlot].getTagCompound().getString("accountNumber");
+		if (inventory[itemCardSlot] != null && inventory[itemCardSlot].hasTagCompound() && !worldObj.isRemote
+				&& inventory[itemCardSlot].stackTagCompound.getString("Owner").equals(player.getPersistentID().toString())
+				) {
+			String account = inventory[itemCardSlot].getTagCompound().getString("Account");
 			int accountBalance = UniversalAccounts.getInstance().getAccountBalance(account);
-			if (accountBalance > spinFee) {
+			if (accountBalance >= spinFee) {
 				cardAvailable = true;
 			}
 		}
@@ -149,8 +152,11 @@ public class TileBandit extends TileEntity implements IInventory {
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer entityplayer) {
-		return worldObj.getTileEntity(xCoord, yCoord, zCoord) == this
+		boolean result = worldObj.getTileEntity(xCoord, yCoord, zCoord) == this
 				&& entityplayer.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) < 64;
+		if(!result)
+			entityplayer.closeScreen();
+		return result;
 	}
 
 	public void sendPacket(int button, boolean shiftPressed) {
