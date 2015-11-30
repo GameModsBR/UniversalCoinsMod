@@ -51,6 +51,7 @@ public class TileBandit extends TileEntity implements IInventory {
 				UniversalAccounts.getInstance().debitAccount(account, spinFee);
 			} else {
 				coinSum -= spinFee;
+				coinSum = Math.max(coinSum, 0);
 			}
 			leverPull();
 			checkCard();
@@ -204,7 +205,7 @@ public class TileBandit extends TileEntity implements IInventory {
 			}
 		}
 		tagCompound.setTag("Inventory", itemList);
-		tagCompound.setInteger("coinSum", coinSum);
+		tagCompound.setInteger("coinSum", Math.max(coinSum, 0));
 		tagCompound.setInteger("spinFee", spinFee);
 		tagCompound.setInteger("fourMatchPayout", fourMatchPayout);
 		tagCompound.setInteger("fiveMatchPayout", fiveMatchPayout);
@@ -231,7 +232,7 @@ public class TileBandit extends TileEntity implements IInventory {
 			}
 		}
 		try {
-			coinSum = tagCompound.getInteger("coinSum");
+			coinSum = Math.max(tagCompound.getInteger("coinSum"),0);
 		} catch (Throwable ex2) {
 			coinSum = 0;
 		}
@@ -332,6 +333,7 @@ public class TileBandit extends TileEntity implements IInventory {
 			debitAmount = Math.min(stackSize, (Integer.MAX_VALUE - coinSum) / itemValue);
 			if (!worldObj.isRemote) {
 				coinSum -= debitAmount * itemValue;
+				coinSum = Math.max(coinSum, 0);
 			}
 		}
 	}
