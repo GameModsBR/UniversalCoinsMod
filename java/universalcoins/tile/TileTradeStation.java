@@ -217,6 +217,7 @@ public class TileTradeStation extends TileEntity implements IInventory, ISidedIn
 		if (inventory[itemOutputSlot] == null && inventory[itemInputSlot].getMaxStackSize() >= amount) {
 			if (!debitAccount(itemPrice * amount)) {
 				coinSum -= itemPrice * amount;
+				coinSum = Math.max(coinSum, 0);
 			}
 			inventory[itemOutputSlot] = new ItemStack(inventory[itemInputSlot].getItem(), amount,
 					inventory[itemInputSlot].getItemDamage());
@@ -225,6 +226,7 @@ public class TileTradeStation extends TileEntity implements IInventory, ISidedIn
 				&& inventory[itemOutputSlot].stackSize + amount <= inventory[itemInputSlot].getMaxStackSize()) {
 			if (!debitAccount(itemPrice * amount)) {
 				coinSum -= itemPrice * amount;
+				coinSum = Math.max(coinSum, 0);
 			}
 			inventory[itemOutputSlot].stackSize += amount;
 		} else {
@@ -333,10 +335,12 @@ public class TileTradeStation extends TileEntity implements IInventory, ISidedIn
 				int amount = coinSum / multiplier;
 				if (amount >= 64) {
 					coinSum -= multiplier * 64;
+					coinSum = Math.max(coinSum, 0);
 					inventory[itemOutputSlot] = new ItemStack(itemOnButton);
 					inventory[itemOutputSlot].stackSize = 64;
 				} else {
 					coinSum -= multiplier * amount;
+					coinSum = Math.max(coinSum, 0);
 					inventory[itemOutputSlot] = new ItemStack(itemOnButton);
 					inventory[itemOutputSlot].stackSize = amount;
 				}
@@ -345,9 +349,11 @@ public class TileTradeStation extends TileEntity implements IInventory, ISidedIn
 						inventory[itemOutputSlot].getMaxStackSize() - inventory[itemOutputSlot].stackSize);
 				inventory[itemOutputSlot].stackSize += amount;
 				coinSum -= multiplier * amount;
+				coinSum = Math.max(coinSum, 0);
 			}
 		} else {
 			coinSum -= multiplier;
+			coinSum = Math.max(coinSum, 0);
 			if (inventory[itemOutputSlot] == null) {
 				inventory[itemOutputSlot] = new ItemStack(itemOnButton);
 			} else {

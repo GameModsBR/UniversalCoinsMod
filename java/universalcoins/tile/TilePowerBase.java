@@ -143,6 +143,7 @@ public class TilePowerBase extends TileEntity implements IInventory, IEnergyRece
 				}
 				if (!playerCredited && coinSum + UniversalCoins.rfWholesaleRate < Integer.MAX_VALUE) {
 					coinSum += UniversalCoins.rfWholesaleRate;
+					coinSum = Math.max(coinSum, 0);
 					krfSold += 10;
 					UniversalPower.getInstance().receiveEnergy(10, false);
 				}
@@ -278,6 +279,7 @@ public class TilePowerBase extends TileEntity implements IInventory, IEnergyRece
 			debitAmount = Math.min(stackSize, (Integer.MAX_VALUE - coinSum) / itemValue);
 			if (!worldObj.isRemote) {
 				coinSum -= debitAmount * itemValue;
+				coinSum = Math.max(coinSum, 0);
 			}
 		}
 	}

@@ -71,7 +71,7 @@ public class BlockPowerReceiver extends BlockContainer {
 					}
 				}
 				tentity.resetPowerDirection();
-				tentity.coinSum = tagCompound.getInteger("coinSum");
+				tentity.coinSum = Math.max(tagCompound.getInteger("coinSum"), 0);
 				tentity.rfLevel = tagCompound.getInteger("rfLevel");
 			}
 			world.markBlockForUpdate(x, y, z);

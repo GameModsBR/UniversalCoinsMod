@@ -166,6 +166,7 @@ public class TileVendor extends TileEntity implements IInventory, ISidedInventor
 		} else {
 			// get buyer coins
 			userCoinSum = retrieveCoins(userCoinSum, buttonClickedID, shiftPressed);
+			coinSum = Math.max(coinSum, 0);
 		}
 	}
 
@@ -273,6 +274,7 @@ public class TileVendor extends TileEntity implements IInventory, ISidedInventor
 					debitUserAccount(itemPrice * amount);
 				} else {
 					userCoinSum -= itemPrice * amount;
+					coinSum = Math.max(coinSum, 0);
 				}
 			} else {
 				totalSale = Math.min(inventory[itemTradeSlot].stackSize * amount,
@@ -282,6 +284,7 @@ public class TileVendor extends TileEntity implements IInventory, ISidedInventor
 					debitUserAccount(itemPrice * amount);
 				} else {
 					userCoinSum -= itemPrice * amount;
+					coinSum = Math.max(coinSum, 0);
 				}
 			}
 			coinSum = 0;
@@ -308,6 +311,7 @@ public class TileVendor extends TileEntity implements IInventory, ISidedInventor
 						debitUserAccount(itemPrice * thisSale / inventory[itemTradeSlot].stackSize);
 					} else {
 						userCoinSum -= itemPrice * thisSale / inventory[itemTradeSlot].stackSize;
+						coinSum = Math.max(coinSum, 0);
 					}
 					if (inventory[itemCardSlot] != null
 							&& inventory[itemCardSlot].getItem() == UniversalCoins.proxy.itemEnderCard
@@ -392,6 +396,7 @@ public class TileVendor extends TileEntity implements IInventory, ISidedInventor
 				creditUserAccount(itemPrice * amount / inventory[itemTradeSlot].stackSize);
 			} else {
 				userCoinSum += itemPrice * amount / inventory[itemTradeSlot].stackSize;
+				coinSum = Math.max(coinSum, 0);
 			}
 			inventory[itemSellSlot].stackSize -= amount;
 			if (inventory[itemSellSlot].stackSize == 0) {
@@ -439,6 +444,7 @@ public class TileVendor extends TileEntity implements IInventory, ISidedInventor
 					debitOwnerAccount(itemPrice * thisSale / inventory[itemTradeSlot].stackSize);
 				} else {
 					coinSum -= itemPrice * thisSale / inventory[itemTradeSlot].stackSize;
+					coinSum = Math.max(coinSum, 0);
 				}
 				if (inventory[itemUserCardSlot] != null
 						&& inventory[itemUserCardSlot].getItem() instanceof ItemEnderCard
@@ -447,6 +453,7 @@ public class TileVendor extends TileEntity implements IInventory, ISidedInventor
 					creditUserAccount(itemPrice * thisSale / inventory[itemTradeSlot].stackSize);
 				} else {
 					userCoinSum += itemPrice * thisSale / inventory[itemTradeSlot].stackSize;
+					coinSum = Math.max(coinSum, 0);
 				}
 				// cleanup empty stacks
 				if (inventory[itemSellSlot] == null || inventory[itemSellSlot].stackSize == 0) {

@@ -103,7 +103,7 @@ public class ContainerBandit extends Container {
 		for (int i = 0; i < this.crafters.size(); ++i) {
 			ICrafting icrafting = (ICrafting) this.crafters.get(i);
 
-			if (this.lastCoinSum != tEntity.coinSum || this.lastCardAvailable != tEntity.cardAvailable
+			if (this.lastCoinSum != tEntity.coinSum || this.lastCardAvailable != tEntity.isCardAvailable()
 					|| this.lastInUse != tEntity.inUse || this.lastPlayerName != tEntity.playerName
 					|| this.lastSpinFee != tEntity.spinFee || this.lastFourMatchPayout != tEntity.fourMatchPayout
 					|| this.lastFiveMatchPayout != tEntity.fiveMatchPayout || this.lastReelPos[0] != tEntity.reelPos[0]
@@ -113,7 +113,7 @@ public class ContainerBandit extends Container {
 			}
 
 			this.lastCoinSum = tEntity.coinSum;
-			this.lastCardAvailable = tEntity.cardAvailable;
+			this.lastCardAvailable = tEntity.isCardAvailable();
 			this.lastInUse = tEntity.inUse;
 			this.lastPlayerName = tEntity.playerName;
 			this.lastSpinFee = tEntity.spinFee;

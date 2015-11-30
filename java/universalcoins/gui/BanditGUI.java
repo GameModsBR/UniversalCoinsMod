@@ -72,7 +72,7 @@ public class BanditGUI extends GuiContainer {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
 		// disable if player has no money
-		if (tEntity.cardAvailable) {
+		if (tEntity.isCardAvailable()) {
 			spinButton.enabled = !reelActive[0] && !reelActive[1] && !reelActive[2] && !reelActive[3] && !reelActive[4];
 		} else {
 			spinButton.enabled = tEntity.coinSum >= tEntity.spinFee && !reelActive[0] && !reelActive[1] && !reelActive[2] && !reelActive[3] && !reelActive[4];

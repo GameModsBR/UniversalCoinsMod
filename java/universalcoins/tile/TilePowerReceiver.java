@@ -296,6 +296,7 @@ public class TilePowerReceiver extends TileEntity implements IInventory, IEnergy
 			debitAmount = Math.min(stackSize, (Integer.MAX_VALUE - coinSum) / itemValue);
 			if (!worldObj.isRemote) {
 				coinSum -= debitAmount * itemValue;
+				coinSum = Math.max(coinSum, 0);
 			}
 		}
 	}
@@ -306,6 +307,7 @@ public class TilePowerReceiver extends TileEntity implements IInventory, IEnergy
 			rfLevel -= maxExtract;
 			if (coinSum - UniversalCoins.rfRetailRate >= 0) {
 				coinSum -= UniversalCoins.rfRetailRate;
+				coinSum = Math.max(coinSum, 0);
 			}
 		}
 		return Math.min(rfLevel, 1000);
@@ -318,6 +320,7 @@ public class TilePowerReceiver extends TileEntity implements IInventory, IEnergy
 				rfLevel += 10000;
 			} else if (rfLevel == 0 && coinSum - UniversalCoins.rfRetailRate >= 0) {
 					coinSum -= UniversalCoins.rfRetailRate;
+					coinSum = Math.max(coinSum, 0);
 					rfLevel += 10000;
 			}
 			wrfLevel = UniversalPower.getInstance().getRFLevel();
@@ -330,6 +333,7 @@ public class TilePowerReceiver extends TileEntity implements IInventory, IEnergy
 		} else if (rfLevel == 0 && UniversalPower.getInstance().extractEnergy(10, true) > 0 
 				&& coinSum - UniversalCoins.rfRetailRate >= 0) {
 				coinSum -= UniversalCoins.rfRetailRate;
+				coinSum = Math.max(coinSum, 0);
 				UniversalPower.getInstance().extractEnergy(10, false);
 				rfLevel += 10000;
 		}

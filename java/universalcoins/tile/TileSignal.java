@@ -276,6 +276,7 @@ public class TileSignal extends TileEntity implements IInventory {
 			debitAmount = Math.min(stack.stackSize, (Integer.MAX_VALUE - coinSum) / itemValue);
 			if (!worldObj.isRemote) {
 				coinSum -= debitAmount * itemValue;
+				coinSum = Math.max(coinSum, 0);
 				// debitAccount(debitAmount * itemValue);
 				// updateAccountBalance();
 			}

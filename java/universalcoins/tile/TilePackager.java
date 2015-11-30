@@ -83,7 +83,7 @@ public class TilePackager extends TileEntity implements IInventory, ISidedInvent
 						UniversalAccounts.getInstance().debitAccount(account, packageCost[packageSize]);
 					} else {
 						coinSum -= packageCost[packageSize];
-
+						coinSum = Math.max(coinSum, 0);
 					}
 				}
 
@@ -354,6 +354,7 @@ public class TilePackager extends TileEntity implements IInventory, ISidedInvent
 			debitAmount = Math.min(stackSize, (Integer.MAX_VALUE - coinSum) / itemValue);
 			if (!worldObj.isRemote) {
 				coinSum -= debitAmount * itemValue;
+				coinSum = Math.max(coinSum, 0);
 			}
 		}
 	}
