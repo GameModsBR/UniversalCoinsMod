@@ -46,7 +46,7 @@ public class TileBandit extends TileEntity implements IInventory {
 
 	public void onButtonPressed(int buttonId) {
 		if (buttonId == 0) {
-			if (cardAvailable) {
+			if (isCardAvailable()) {
 				String account = inventory[itemCardSlot].getTagCompound().getString("Account");
 				UniversalAccounts.getInstance().debitAccount(account, spinFee);
 			} else {
@@ -56,7 +56,7 @@ public class TileBandit extends TileEntity implements IInventory {
 			checkCard();
 		}
 		if (buttonId == 1) {
-			if (cardAvailable && inventory[itemCardSlot].getItem() == UniversalCoins.proxy.itemEnderCard) {
+			if (isCardAvailable() && inventory[itemCardSlot].getItem() == UniversalCoins.proxy.itemEnderCard) {
 				String account = inventory[itemCardSlot].getTagCompound().getString("Account");
 				UniversalAccounts.getInstance().creditAccount(account, coinSum);
 				coinSum = 0;
@@ -137,6 +137,12 @@ public class TileBandit extends TileEntity implements IInventory {
 		return -1;
 	}
 
+	public boolean isCardAvailable()
+	{
+		checkCard();
+		return cardAvailable;
+	}
+
 	public void checkCard() {
 		cardAvailable = false;
 		if (inventory[itemCardSlot] != null && inventory[itemCardSlot].hasTagCompound() && !worldObj.isRemote
@@ -202,7 +208,7 @@ public class TileBandit extends TileEntity implements IInventory {
 		tagCompound.setInteger("spinFee", spinFee);
 		tagCompound.setInteger("fourMatchPayout", fourMatchPayout);
 		tagCompound.setInteger("fiveMatchPayout", fiveMatchPayout);
-		tagCompound.setBoolean("cardAvailable", cardAvailable);
+		tagCompound.setBoolean("cardAvailable", isCardAvailable());
 		tagCompound.setString("customName", customName);
 		tagCompound.setBoolean("inUse", inUse);
 		tagCompound.setInteger("reelPos0", reelPos[0]);
