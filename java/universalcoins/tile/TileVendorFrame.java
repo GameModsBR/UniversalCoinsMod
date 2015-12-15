@@ -20,6 +20,9 @@ public class TileVendorFrame extends TileVendor {
 
 	public void updateSigns() {
 
+		if(worldObj.isRemote)
+			return;
+
 		if (inventory[itemTradeSlot] != null) {
 
 			signText[0] = sellMode ? "&" + Integer.toHexString(textColor) + "Selling"
