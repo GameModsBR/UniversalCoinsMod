@@ -75,7 +75,7 @@ public class BlockVendor extends BlockContainer {
 	}
 
 	public ItemStack getItemStackWithData(World world, int x, int y, int z) {
-		ItemStack stack = new ItemStack(world.getBlock(x, y, z), 1, 0);
+		ItemStack stack = new ItemStack(world.getBlock(x, y, z), 1, damageDropped(world.getBlockMetadata(x,y,z)));
 		TileEntity tentity = world.getTileEntity(x, y, z);
 		if (tentity instanceof TileVendorBlock) {
 			TileVendorBlock te = (TileVendorBlock) tentity;
