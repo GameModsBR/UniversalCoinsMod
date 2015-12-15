@@ -3,6 +3,7 @@ package universalcoins;
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.world.World;
 import universalcoins.gui.BanditConfigGUI;
 import universalcoins.gui.BanditGUI;
@@ -54,7 +55,8 @@ class GuiHandler implements IGuiHandler {
 							GUI_SIGNAL = 11,
 							GUI_PACKAGER = 12,
 							GUI_POWER_BASE = 13,
-							GUI_POWER_RECEIVER = 14;
+							GUI_POWER_RECEIVER = 14,
+							GUI_ADV_SIGN = 15;
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
@@ -111,6 +113,8 @@ class GuiHandler implements IGuiHandler {
 				if(tileEntity instanceof TilePowerReceiver)
 					return new ContainerPowerReceiver(player.inventory, (TilePowerReceiver) tileEntity);
 				else return null;
+			case GUI_ADV_SIGN:
+				return null;
 		}
 
 		if (tileEntity instanceof TileTradeStation) {
@@ -166,7 +170,8 @@ class GuiHandler implements IGuiHandler {
 			case GUI_TRADE_STATION:
 				if(tileEntity instanceof TileTradeStation)
 					return new TradeStationGUI(player.inventory, (TileTradeStation)tileEntity);
-				else return null;
+				else if(tileEntity instanceof TileUCSign)
+					return new UCSignEditGUI((TileEntitySign) tileEntity);
 			case GUI_VENDOR_WRENCH:
 			case GUI_VENDOR_OWNER:
 			case GUI_VENDOR_SELL:
@@ -212,6 +217,10 @@ class GuiHandler implements IGuiHandler {
 			case GUI_POWER_RECEIVER:
 				if(tileEntity instanceof TilePowerReceiver)
 					return new PowerReceiverGUI(player.inventory, (TilePowerReceiver) tileEntity);
+				else return null;
+			case GUI_ADV_SIGN:
+				if (tileEntity instanceof TileUCSign)
+					return new UCSignEditGUI((TileUCSign) tileEntity);
 				else return null;
 		}
 
