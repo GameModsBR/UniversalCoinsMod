@@ -17,6 +17,17 @@ import universalcoins.tile.TileUCSign;
 public class TileEntityUCSignRenderer extends TileEntitySpecialRenderer {
 	private int counter = 0;
 	private boolean showStick = false;
+	private long counterIncrement;
+
+	private void incrementCounter()
+	{
+		long time = System.currentTimeMillis();
+		if(time >= counterIncrement)
+		{
+			counter++;
+			counterIncrement = time +20;
+		}
+	}
 
 	public void renderTileEntityAt(TileUCSign tileEntity, double xCoord, double yCoord, double zCoord,
 			float p_147512_8_) {
@@ -185,7 +196,7 @@ public class TileEntityUCSignRenderer extends TileEntitySpecialRenderer {
 					}
 					fontrenderer.drawString(subset, -fontrenderer.getStringWidth(subset) / 2,
 							i * 10 - tileEntity.signText.length * 5, colors[colorCode]);
-					counter++;
+					incrementCounter();
 					if (counter / 10 > s.length() + 8)
 						counter = 0;
 				}
