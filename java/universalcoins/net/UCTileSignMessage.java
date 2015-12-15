@@ -70,7 +70,7 @@ public class UCTileSignMessage implements IMessage, IMessageHandler<UCTileSignMe
 				{
 					IChatComponent component = IChatComponent.Serializer.func_150699_a(str);
 					str = component.getFormattedText();
-					str = str.replaceFirst("^\u00A7([0-9a-fl-r])", "&\\1");
+					str = str.replaceFirst("^\u00A7([0-9a-fl-r])", "&$1");
 					str = str.replaceAll("\u00A7[0-9a-fl-r]", "");
 				}
 				catch (Exception ignored)
