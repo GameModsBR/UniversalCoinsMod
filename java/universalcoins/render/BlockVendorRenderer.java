@@ -69,6 +69,7 @@ public class BlockVendorRenderer implements ISimpleBlockRenderingHandler {
 		renderer.flipTexture = true;
 		renderer.renderStandardBlock(block, x, y, z);
 		renderer.flipTexture = false;
+		renderer.setRenderAllFaces(false);
 		renderer.setRenderFromInside(false);
 
 		renderer.setRenderBounds(0.0, 0.0, 0.0, 1.0, 0.13, 1.0);
