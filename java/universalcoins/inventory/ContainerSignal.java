@@ -54,8 +54,8 @@ public class ContainerSignal extends Container {
 			stack = stackInSlot.copy();
 
 			// merges the item into player inventory since its in the tileEntity
-			if (slot < 3) {
-				if (!this.mergeItemStack(stackInSlot, 3, 39, true)) {
+			if (slot < 1) {
+				if (!this.mergeItemStack(stackInSlot, 1, 37, true)) {
 					return null;
 				} else {
 					tEntity.coinsTaken(stack);
@@ -65,7 +65,7 @@ public class ContainerSignal extends Container {
 			// inventory
 			else {
 				boolean foundSlot = false;
-				for (int i = 0; i < 3; i++) {
+				for (int i = 0; i < 1; i++) {
 					if (((Slot) inventorySlots.get(i)).isItemValid(stackInSlot)
 							&& this.mergeItemStack(stackInSlot, i, i + 1, false)) {
 						foundSlot = true;
