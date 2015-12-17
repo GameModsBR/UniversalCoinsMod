@@ -10,7 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 import universalcoins.tile.TileCardStation;
 
 public class UCTileCardStationMessage implements IMessage, IMessageHandler<UCTileCardStationMessage, IMessage> {
-	private int x, y, z, coinWithdrawalAmount, accountBalance, forcedMenuState = -1, resetBarProgress, lockBarProgress;
+	private int x, y, z, coinWithdrawalAmount, accountBalance, forcedMenuState = -1, resetBarProgress, lockBarProgress = -1;
 	private boolean inUse, depositCoins, withdrawCoins, accountError;
 	private String playerName, playerUID, accountNumber, cardOwner, groupAccountName, groupAccountNumber;
 
@@ -35,6 +35,7 @@ public class UCTileCardStationMessage implements IMessage, IMessageHandler<UCTil
 		this.groupAccountNumber = tileEntity.customAccountNumber;
 		this.forcedMenuState = tileEntity.forcedMenuState;
 		this.resetBarProgress = tileEntity.resetBarProgress;
+		this.lockBarProgress = tileEntity.lockBarProgress;
 	}
 
 	@Override
