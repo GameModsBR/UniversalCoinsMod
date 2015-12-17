@@ -10,7 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 import universalcoins.tile.TileCardStation;
 
 public class UCTileCardStationMessage implements IMessage, IMessageHandler<UCTileCardStationMessage, IMessage> {
-	private int x, y, z, coinWithdrawalAmount, accountBalance;
+	private int x, y, z, coinWithdrawalAmount, accountBalance, forcedMenuState = -1, resetBarProgress, lockBarProgress;
 	private boolean inUse, depositCoins, withdrawCoins, accountError;
 	private String playerName, playerUID, accountNumber, cardOwner, groupAccountName, groupAccountNumber;
 
@@ -33,6 +33,8 @@ public class UCTileCardStationMessage implements IMessage, IMessageHandler<UCTil
 		this.cardOwner = tileEntity.cardOwner;
 		this.groupAccountName = tileEntity.customAccountName;
 		this.groupAccountNumber = tileEntity.customAccountNumber;
+		this.forcedMenuState = tileEntity.forcedMenuState;
+		this.resetBarProgress = tileEntity.resetBarProgress;
 	}
 
 	@Override
@@ -52,6 +54,9 @@ public class UCTileCardStationMessage implements IMessage, IMessageHandler<UCTil
 		this.cardOwner = ByteBufUtils.readUTF8String(buf);
 		this.groupAccountName = ByteBufUtils.readUTF8String(buf);
 		this.groupAccountNumber = ByteBufUtils.readUTF8String(buf);
+		this.forcedMenuState = buf.readInt();
+		this.resetBarProgress = buf.readInt();
+		this.lockBarProgress = buf.readInt();
 	}
 
 	@Override
@@ -71,6 +76,9 @@ public class UCTileCardStationMessage implements IMessage, IMessageHandler<UCTil
 		ByteBufUtils.writeUTF8String(buf, cardOwner);
 		ByteBufUtils.writeUTF8String(buf, groupAccountName);
 		ByteBufUtils.writeUTF8String(buf, groupAccountNumber);
+		buf.writeInt(forcedMenuState);
+		buf.writeInt(resetBarProgress);
+		buf.writeInt(lockBarProgress);
 	}
 
 	@Override
@@ -92,6 +100,9 @@ public class UCTileCardStationMessage implements IMessage, IMessageHandler<UCTil
 			((TileCardStation) tileEntity).cardOwner = message.cardOwner;
 			((TileCardStation) tileEntity).customAccountName = message.groupAccountName;
 			((TileCardStation) tileEntity).customAccountNumber = message.groupAccountNumber;
+			((TileCardStation) tileEntity).forcedMenuState = message.forcedMenuState;
+			((TileCardStation) tileEntity).resetBarProgress = message.resetBarProgress;
+			((TileCardStation) tileEntity).lockBarProgress = message.lockBarProgress;
 		}
 		return null;
 	}

@@ -29,6 +29,7 @@ public class CardStationGUI extends GuiContainer {
 	int barProgress = 0;
 	int counter = 0;
 	long barProgressNextIncrement;
+	int lastBarProgressReset;
 
 	public CardStationGUI(InventoryPlayer inventoryPlayer, TileCardStation tileEntity) {
 		super(new ContainerCardStation(inventoryPlayer, tileEntity));
@@ -40,6 +41,7 @@ public class CardStationGUI extends GuiContainer {
 
 	@Override
 	protected void keyTyped(char c, int i) {
+		int menuState = tEntity.forcedMenuState >= 0? tEntity.forcedMenuState : this.menuState;
 		if (menuState == 6 || menuState == 9) {
 			textField.setFocused(true);
 			textField.textboxKeyTyped(c, i);
@@ -85,10 +87,22 @@ public class CardStationGUI extends GuiContainer {
 		int x = (width - xSize) / 2;
 		int y = (height - ySize) / 2;
 		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
-		if (menuState == 0 && super.inventorySlots.getSlot(0).getStack() != null && tEntity.accountBalance >= 0) {
+
+		int menuStateRead = tEntity.forcedMenuState >= 0? tEntity.forcedMenuState : this.menuState;
+		if(tEntity.lockBarProgress >= 0)
+			barProgress = tEntity.lockBarProgress;
+		else if(lastBarProgressReset < tEntity.resetBarProgress)
+		{
+			barProgress = 0;
+			lastBarProgressReset = tEntity.resetBarProgress;
+		}
+
+		System.out.println("ReadMenuState: "+menuStateRead+" progress: "+barProgress);
+
+		if (menuStateRead == 0 && super.inventorySlots.getSlot(0).getStack() != null && tEntity.accountBalance >= 0) {
 			menuState = 2;
 		}
-		if (menuState == 1) {
+		if (menuStateRead == 1) {
 			// state 1 is auth - run eye scan
 			incrementProgressBar();
 			this.drawTexturedModalRect(x + 151, y + 19, 176, 0, 18, 18);
@@ -127,22 +141,22 @@ public class CardStationGUI extends GuiContainer {
 				}
 			}
 		}
-		if (menuState == 2 && (tEntity.accountBalance == -1 || (tEntity.getStackInSlot(tEntity.itemCardSlot) != null
+		if (menuStateRead == 2 && (tEntity.accountBalance == -1 || (tEntity.getStackInSlot(tEntity.itemCardSlot) != null
 				&& !tEntity.getStackInSlot(tEntity.itemCardSlot).hasTagCompound()))) {
 			tEntity.sendButtonMessage(6, false); // message to destroy card
 			menuState = 14;
 		}
 
 		DecimalFormat formatter = new DecimalFormat("#,###,###,###");
-		if (menuState == 4 || menuState == 5) {
+		if (menuStateRead == 4 || menuStateRead == 5) {
 			fontRendererObj.drawString(formatter.format(tEntity.accountBalance), x + 34, y + 52, 4210752);
 		}
-		if (menuState == 6) {
+		if (menuStateRead == 6) {
 			// display account balance
 			fontRendererObj.drawString(formatter.format(tEntity.accountBalance), x + 34, y + 32, 4210752);
 			fontRendererObj.drawString(textField.getText() + drawCursor(), x + 34, y + 52, 4210752);
 		}
-		if (menuState == 9) {
+		if (menuStateRead == 9) {
 			// display text field for custom name entry
 			if (textField.getText() == "0") { // textfield has not been
 												// initialized. do it now
@@ -151,34 +165,34 @@ public class CardStationGUI extends GuiContainer {
 			}
 			fontRendererObj.drawString(textField.getText() + drawCursor(), x + 34, y + 42, 4210752);
 		}
-		if (menuState == 10 && tEntity.accountError) {
+		if (menuStateRead == 10 && tEntity.accountError) {
 			incrementProgressBar();
 			if (barProgress > 20) {
 				menuState = 18;
 			}
 		}
-		if (menuState == 14) {
+		if (menuStateRead == 14) {
 			incrementProgressBar();
 			if (barProgress > 100) {
 				menuState = 0;
 				barProgress = 0;
 			}
 		}
-		if (menuState == 15) {
+		if (menuStateRead == 15) {
 			incrementProgressBar();
 			if (barProgress > 100) {
 				menuState = 2;
 				barProgress = 0;
 			}
 		}
-		if (menuState == 18) {
+		if (menuStateRead == 18) {
 			incrementProgressBar();
 			if (barProgress > 100) {
 				menuState = 9;
 				barProgress = 0;
 			}
 		}
-		if (menuState == 19) {
+		if (menuStateRead == 19) {
 			if (tEntity.accountError) {
 				tEntity.sendButtonMessage(10, false);// send function code 10
 														// (reset accountError)
@@ -198,10 +212,17 @@ public class CardStationGUI extends GuiContainer {
 		fontRendererObj.drawString(tEntity.getInventoryName(), 6, 5, 4210752);
 		// draws "Inventory" or your regional equivalent
 		fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 6, ySize - 96 + 2, 4210752);
-		drawMenu(menuState);
+		drawMenu(tEntity.forcedMenuState >= 0? tEntity.forcedMenuState : menuState);
 	}
 
 	protected void actionPerformed(GuiButton button) {
+		if(tEntity.forcedMenuState >= 0)
+		{
+			System.out.println("Rendering: "+tEntity.forcedMenuState+" error: "+tEntity.accountError);
+			tEntity.sendButtonMessage(-(button.id+1), isShiftKeyDown());
+			return;
+		}
+
 		// We are not going to send button IDs to the server
 		// instead, we are going to use function IDs to send
 		// a packet to the server to do things

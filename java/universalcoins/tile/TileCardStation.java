@@ -39,6 +39,9 @@ public class TileCardStation extends TileEntity implements IInventory, ISidedInv
 	public int accountBalance = 0;
 	public String customAccountName = "none";
 	public String customAccountNumber = "none";
+	public int forcedMenuState = -1;
+	public int resetBarProgress;
+	public int lockBarProgress = -1;
 
 	public void inUseCleanup() {
 		if (worldObj.isRemote)
