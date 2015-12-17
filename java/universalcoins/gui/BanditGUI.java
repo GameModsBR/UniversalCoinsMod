@@ -77,7 +77,7 @@ public class BanditGUI extends GuiContainer {
 		} else {
 			spinButton.enabled = tEntity.coinSum >= tEntity.spinFee && !reelActive[0] && !reelActive[1] && !reelActive[2] && !reelActive[3] && !reelActive[4];
 		}
-		coinButton.enabled = tEntity.coinSum > 0;		
+		//coinButton.enabled = tEntity.coinSum > 0;
 
 		final ResourceLocation texture = new ResourceLocation("universalcoins", "textures/gui/bandit.png");
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
