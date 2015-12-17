@@ -45,7 +45,7 @@ public class ItemPackage extends Item {
 	@Override
 	public boolean onItemUse(ItemStack itemstack, EntityPlayer player, World world, int x, int y, int z, int side,
 			float px, float py, float pz) {
-		if (itemstack.stackTagCompound != null) {
+		if (itemstack.stackTagCompound != null && !world.isRemote) {
 			// TODO unpack items and destroy package
 			NBTTagList tagList = itemstack.stackTagCompound.getTagList("Inventory", Constants.NBT.TAG_COMPOUND);
 			for (int i = 0; i < tagList.tagCount(); i++) {
