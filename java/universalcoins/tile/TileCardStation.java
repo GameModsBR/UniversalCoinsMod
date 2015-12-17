@@ -79,7 +79,8 @@ public class TileCardStation extends TileEntity implements IInventory, ISidedInv
 				}
 			}
 		}
-		fillCoinSlot();
+		if(!worldObj.isRemote)
+			fillCoinSlot();
 		return stack;
 	}
 
