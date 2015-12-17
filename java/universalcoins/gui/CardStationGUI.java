@@ -161,7 +161,7 @@ public class CardStationGUI extends GuiContainer {
 			if (textField.getText() == "0") { // textfield has not been
 												// initialized. do it now
 				textField.setMaxStringLength(20);
-				textField.setText(tEntity.customAccountName);
+				textField.setText(tEntity.customAccountName.contentEquals("none")?"":tEntity.customAccountName);
 			}
 			fontRendererObj.drawString(textField.getText() + drawCursor(), x + 34, y + 42, 4210752);
 		}
