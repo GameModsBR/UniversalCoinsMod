@@ -140,11 +140,15 @@ public class TileBandit extends TileEntity implements IInventory {
 
 	public boolean isCardAvailable()
 	{
-		checkCard();
+		if(!worldObj.isRemote)
+			checkCard();
 		return cardAvailable;
 	}
 
 	public void checkCard() {
+		if(worldObj.isRemote)
+			return;
+
 		cardAvailable = false;
 		if (inventory[itemCardSlot] != null && inventory[itemCardSlot].hasTagCompound() && !worldObj.isRemote
 				&& inventory[itemCardSlot].stackTagCompound.getString("Owner").equals(player.getPersistentID().toString())
