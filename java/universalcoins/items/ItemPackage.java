@@ -1,9 +1,12 @@
 package universalcoins.items;
 
+import java.text.DateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,7 +14,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.util.Constants;
 import universalcoins.UniversalCoins;
 
@@ -39,6 +45,19 @@ public class ItemPackage extends Item {
 				String itemName = ItemStack.loadItemStackFromNBT(tag).getDisplayName();
 				list.add(itemCount + " " + itemName);
 			}
+
+			if(stack.stackTagCompound.hasKey("sender", Constants.NBT.TAG_STRING))
+				list.add(EnumChatFormatting.BLUE+ StatCollector.translateToLocal("item.package.by")+" "+stack.stackTagCompound.getString("sender"));
+			if(stack.stackTagCompound.hasKey("sent", Constants.NBT.TAG_LONG))
+				list.add(EnumChatFormatting.BLUE+ StatCollector.translateToLocal("item.package.on")+" "+
+						DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.forLanguageTag(
+								Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode().replace("_","-")
+						)).format(stack.stackTagCompound.getLong("sent")));
+			if(stack.stackTagCompound.hasKey("received", Constants.NBT.TAG_LONG))
+				list.add(EnumChatFormatting.BLUE+ StatCollector.translateToLocal("item.package.received")+" "+
+						DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.forLanguageTag(
+								Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode().replace("_","-")
+						)).format(stack.stackTagCompound.getLong("received")));
 		}
 	}
 

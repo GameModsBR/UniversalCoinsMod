@@ -217,6 +217,7 @@ packager.button.large=Large
 packager.button.mode.buy=Mode: Buy
 packager.button.mode.send=Mode: Send
 packager.message.sent= sent you a package
+packager.player.is.not.online=The player is not online
 
 #####
 # ATM GUI
